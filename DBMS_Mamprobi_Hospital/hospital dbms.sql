@@ -1,0 +1,1 @@
+SELECT * FROM hospital_dbms.records;
