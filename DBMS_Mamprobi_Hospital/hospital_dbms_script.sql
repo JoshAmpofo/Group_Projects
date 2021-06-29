@@ -19,6 +19,20 @@ CREATE SCHEMA IF NOT EXISTS `hospital_dbms` DEFAULT CHARACTER SET latin1 ;
 USE `hospital_dbms` ;
 
 -- -----------------------------------------------------
+-- Table `hospital_dbms`.`pharmacy`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `hospital_dbms`.`pharmacy` ;
+
+CREATE TABLE IF NOT EXISTS `hospital_dbms`.`pharmacy` (
+  `Patient_Id` INT(11) NOT NULL,
+  `Drugs_Dispensed` VARCHAR(500) NULL DEFAULT NULL,
+  `Drug_Bills` VARCHAR(45) NULL DEFAULT NULL,
+  PRIMARY KEY (`Patient_Id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
+
+
+-- -----------------------------------------------------
 -- Table `hospital_dbms`.`account_office`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `hospital_dbms`.`account_office` ;
@@ -28,7 +42,12 @@ CREATE TABLE IF NOT EXISTS `hospital_dbms`.`account_office` (
   `Mode_of_Payment` VARCHAR(45) NULL DEFAULT NULL,
   `Payment_reference` VARCHAR(45) NULL DEFAULT NULL,
   `Amount Paid` VARCHAR(45) NULL DEFAULT NULL,
-  PRIMARY KEY (`Patient_Id`))
+  PRIMARY KEY (`Patient_Id`),
+  CONSTRAINT `fk_account_office_pharmacy1`
+    FOREIGN KEY (`Patient_Id`)
+    REFERENCES `hospital_dbms`.`pharmacy` (`Patient_Id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
@@ -50,14 +69,18 @@ DEFAULT CHARACTER SET = latin1;
 
 
 -- -----------------------------------------------------
--- Table `hospital_dbms`.`pharmacy`
+-- Table `hospital_dbms`.`triage`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `hospital_dbms`.`pharmacy` ;
+DROP TABLE IF EXISTS `hospital_dbms`.`triage` ;
 
-CREATE TABLE IF NOT EXISTS `hospital_dbms`.`pharmacy` (
+CREATE TABLE IF NOT EXISTS `hospital_dbms`.`triage` (
   `Patient_Id` INT(11) NOT NULL,
-  `Drugs_Dispensed` VARCHAR(500) NULL DEFAULT NULL,
-  `Drug_Bills` VARCHAR(45) NULL DEFAULT NULL,
+  `Temperature` VARCHAR(10) NULL DEFAULT NULL,
+  `Blood_Pressure` VARCHAR(10) NULL DEFAULT NULL,
+  `Weight` VARCHAR(10) NULL DEFAULT NULL,
+  `Height` VARCHAR(10) NULL DEFAULT NULL,
+  `Sugar_Level` VARCHAR(10) NULL DEFAULT NULL,
+  `Oxygen_Level` VARCHAR(10) NULL DEFAULT NULL,
   PRIMARY KEY (`Patient_Id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
@@ -78,7 +101,22 @@ CREATE TABLE IF NOT EXISTS `hospital_dbms`.`records` (
   `Parity` INT(11) NULL DEFAULT NULL,
   `National_Health_Id` VARCHAR(45) NULL DEFAULT NULL,
   `Emergency_Contact` INT(11) NULL DEFAULT NULL,
-  PRIMARY KEY (`Patient_Id`))
+  PRIMARY KEY (`Patient_Id`),
+  CONSTRAINT `fk_records_triage`
+    FOREIGN KEY (`Patient_Id`)
+    REFERENCES `hospital_dbms`.`triage` (`Patient_Id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_records_consultancy1`
+    FOREIGN KEY (`Patient_Id`)
+    REFERENCES `hospital_dbms`.`consultancy` (`Patient_Id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_records_pharmacy1`
+    FOREIGN KEY (`Patient_Id`)
+    REFERENCES `hospital_dbms`.`pharmacy` (`Patient_Id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
@@ -95,25 +133,12 @@ CREATE TABLE IF NOT EXISTS `hospital_dbms`.`status` (
   `Referred` VARCHAR(45) NULL DEFAULT NULL,
   `Discharged` VARCHAR(45) NULL DEFAULT NULL,
   `Dead` VARCHAR(45) NULL DEFAULT NULL,
-  PRIMARY KEY (`Patient_Id`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = latin1;
-
-
--- -----------------------------------------------------
--- Table `hospital_dbms`.`triage`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `hospital_dbms`.`triage` ;
-
-CREATE TABLE IF NOT EXISTS `hospital_dbms`.`triage` (
-  `Patient_Id` INT(11) NOT NULL,
-  `Temperature` VARCHAR(10) NULL DEFAULT NULL,
-  `Blood_Pressure` VARCHAR(10) NULL DEFAULT NULL,
-  `Weight` VARCHAR(10) NULL DEFAULT NULL,
-  `Height` VARCHAR(10) NULL DEFAULT NULL,
-  `Sugar_Level` VARCHAR(10) NULL DEFAULT NULL,
-  `Oxygen_Level` VARCHAR(10) NULL DEFAULT NULL,
-  PRIMARY KEY (`Patient_Id`))
+  PRIMARY KEY (`Patient_Id`),
+  CONSTRAINT `fk_status_consultancy1`
+    FOREIGN KEY (`Patient_Id`)
+    REFERENCES `hospital_dbms`.`consultancy` (`Patient_Id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
